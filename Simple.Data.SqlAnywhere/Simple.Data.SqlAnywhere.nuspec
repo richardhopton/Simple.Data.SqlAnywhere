@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <id>Simple.Data.SqlAnywhere</id>
+    <version>0.9.8.2</version>
+    <authors>Richard Hopton</authors>
+    <owners>Richard Hopton</owners>
+    <description>SQL Anywhere ADO provider for the Simple.Data data access library.</description> 
+    <projectUrl>http://github.com/richardhopton/Simple.Data.SqlAnywhere</projectUrl>
+    <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+    <iconUrl>http://simplefx.org/images/simpledata100x100.png</iconUrl>
+    <tags>sqlanywhere database data ado .net40</tags>
+    <language>en-us</language>
+    <dependencies>
+      <dependency id="Simple.Data.Ado" version="0.9.8.2" />
+    </dependencies>
+  </metadata>
+</package>

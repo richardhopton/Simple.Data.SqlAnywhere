@@ -1,8 +1,9 @@
 #Simple.Data.SqlServer
 Simple.Data.SqlServer is an ADO provider for the Simple.Data framework by Mark Rendle.
 
-##Supported SqlAnywhere version
-Initial development and testing will be carried out on version 12.0.1 with planned support for versions 8.0.3 upwards.
+##Supported Sql Anywhere version
+SQL Anywhere 12.0.1 - all tests passing
+SQL Anywhere 8.0.3 - 73/87 tests passing
 
 ##Genesis
 The initial code & test assemblies were taken from the SQL Server code & test assemblies and therefore it should be pretty easy to transfer skills from SQL Server to SQL Anywhere.

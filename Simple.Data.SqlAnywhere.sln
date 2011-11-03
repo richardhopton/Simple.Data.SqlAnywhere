@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Data.SqlAnywhere", "Simple.Data.SqlAnywhere\Simple.Data.SqlAnywhere.csproj", "{DF39DE4B-DAB0-41C9-9760-733DEE8391AE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Data.SqlAnywhereTest", "Simple.Data.SqlAnywhereTest\Simple.Data.SqlAnywhereTest.csproj", "{6B639D20-9F9F-480C-BBBC-39D78FCEC5F4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DF39DE4B-DAB0-41C9-9760-733DEE8391AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF39DE4B-DAB0-41C9-9760-733DEE8391AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF39DE4B-DAB0-41C9-9760-733DEE8391AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF39DE4B-DAB0-41C9-9760-733DEE8391AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B639D20-9F9F-480C-BBBC-39D78FCEC5F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B639D20-9F9F-480C-BBBC-39D78FCEC5F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B639D20-9F9F-480C-BBBC-39D78FCEC5F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B639D20-9F9F-480C-BBBC-39D78FCEC5F4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

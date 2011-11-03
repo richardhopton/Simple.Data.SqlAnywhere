@@ -1,0 +1,259 @@
+IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id=OBJECT_ID('dba.TestReset') AND type='P') THEN
+	DROP PROCEDURE dba.TestReset
+END IF
+;
+IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id=OBJECT_ID('dba.GetCustomers') AND type='P') THEN
+	DROP PROCEDURE dba.GetCustomers
+END IF
+;
+IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id=OBJECT_ID('dba.GetCustomerAndOrders') AND type='P') THEN
+	DROP PROCEDURE dba.GetCustomerAndOrders
+END IF
+;
+IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id=OBJECT_ID('dba.GetCustomerCount') AND type='P') THEN
+	DROP FUNCTION dba.GetCustomerCount
+END IF
+;
+IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id=OBJECT_ID('dba.ReturnStrings') AND type='P') THEN
+	DROP PROCEDURE dba.ReturnStrings
+END IF
+;
+IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id=OBJECT_ID('dba.VarcharAndReturnInt') AND type='P') THEN
+	DROP FUNCTION dba.VarcharAndReturnInt
+END IF
+;
+IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id=OBJECT_ID('dba.SchemaTable') AND type='U') THEN
+	DROP TABLE dba.SchemaTable
+END IF
+;
+IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id=OBJECT_ID('test.SchemaTable') AND type='U') THEN
+	DROP TABLE test.SchemaTable
+END IF
+;
+IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id=OBJECT_ID('dba.GroupTestDetail') AND type='U') THEN
+	DROP TABLE dba.GroupTestDetail
+END IF
+;
+IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id=OBJECT_ID('dba.GroupTestMaster') AND type='U') THEN
+	DROP TABLE dba.GroupTestMaster
+END IF
+;
+IF EXISTS(SELECT * FROM dbo.sysusers WHERE name='test') THEN
+	REVOKE CONNECT FROM test
+END IF
+;
+CREATE PROCEDURE dba.TestReset
+AS
+BEGIN
+	IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id=OBJECT_ID('dba.VwCustomers') AND type='V')
+		DROP VIEW dba.VwCustomers
+	IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id=OBJECT_ID('dba.Users') AND type='U')
+		DROP TABLE dba.Users
+	IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id=OBJECT_ID('dba.OrderItems') AND type='U')
+		DROP TABLE dba.OrderItems
+	IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id=OBJECT_ID('dba.Orders') AND type='U')
+		DROP TABLE dba.Orders
+    IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id=OBJECT_ID('dba.Items') AND type='U')
+		DROP TABLE dba.Items
+	IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id=OBJECT_ID('dba.Customers') AND type='U')
+		DROP TABLE dba.Customers
+	IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id=OBJECT_ID('dba.PagingTest') AND type='U')
+		DROP TABLE dba.PagingTest
+	IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id=OBJECT_ID('dba.Images') AND type='U')
+		DROP TABLE dba.Images
+	IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id=OBJECT_ID('dba.Blobs') AND type='U')
+		DROP TABLE dba.Blobs
+	IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id=OBJECT_ID('dba.EnumTest') AND type='U')
+		DROP TABLE dba.EnumTest
+	IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id=OBJECT_ID('dba.DeleteTest') AND type='U')
+		DROP TABLE dba.DeleteTest
+	
+	CREATE TABLE dba.Users (
+		Id       INT            NOT NULL DEFAULT AUTOINCREMENT,
+		Name     VARCHAR (100) NOT NULL,
+		Password VARCHAR (100) NOT NULL,
+		Age      INT            NOT NULL
+	)
+
+	ALTER TABLE dba.Users
+		ADD CONSTRAINT PK_Users PRIMARY KEY CLUSTERED (Id)
+
+	CREATE TABLE dba.Orders (
+		OrderId    INT      NOT NULL DEFAULT AUTOINCREMENT,
+		OrderDate  DATETIME NOT NULL,
+		CustomerId INT      NOT NULL
+	)
+
+	ALTER TABLE dba.Orders
+		ADD CONSTRAINT PK_Orders PRIMARY KEY CLUSTERED (OrderId)
+
+	CREATE TABLE dba.OrderItems (
+		OrderItemId INT NOT NULL DEFAULT AUTOINCREMENT,
+		OrderId     INT NOT NULL,
+		ItemId      INT NOT NULL,
+		Quantity    INT NOT NULL
+	)
+
+	ALTER TABLE dba.OrderItems
+		ADD CONSTRAINT PK_OrderItems PRIMARY KEY CLUSTERED (OrderItemId)
+
+    CREATE TABLE dba.Images(
+	    Id int NOT NULL,
+	    TheImage image NOT NULL
+    )
+
+    ALTER TABLE dba.Images
+		ADD CONSTRAINT PK_Images PRIMARY KEY CLUSTERED (Id)
+
+	CREATE TABLE dba.Items (
+		ItemId INT            NOT NULL DEFAULT AUTOINCREMENT,
+		Name   VARCHAR (100) NOT NULL,
+		Price  MONEY          NOT NULL
+	)
+
+	ALTER TABLE dba.Items
+		ADD CONSTRAINT PK_Items PRIMARY KEY CLUSTERED (ItemId)
+
+	CREATE TABLE dba.Customers (
+		CustomerId INT            NOT NULL DEFAULT AUTOINCREMENT,
+		Name       VARCHAR (100) NOT NULL,
+		Address    VARCHAR (200) NULL
+	)
+
+	CREATE VIEW dba.VwCustomers
+    AS
+        SELECT     Name, Address, CustomerId
+        FROM         dba.Customers
+        WHERE     (Name LIKE '%e%')
+		
+	ALTER TABLE dba.Customers
+		ADD CONSTRAINT PK_Customers PRIMARY KEY CLUSTERED (CustomerId)
+	    
+	CREATE TABLE dba.PagingTest (Id int not null, Dummy int)
+
+	CREATE TABLE dba.Blobs(
+		Id int NOT NULL,
+		Data long binary NULL
+	)
+
+	ALTER TABLE dba.Blobs
+		ADD CONSTRAINT PK_Blobs PRIMARY KEY CLUSTERED (Id)
+
+	CREATE TABLE dba.EnumTest(
+		Id int NOT NULL DEFAULT AUTOINCREMENT,
+		Flag int NOT NULL
+	)
+	
+	ALTER TABLE dba.EnumTest
+		ADD CONSTRAINT PK_EnumTest PRIMARY KEY CLUSTERED (Id)
+
+	CREATE TABLE dba.DeleteTest(
+		Id int NOT NULL
+	)
+
+	ALTER TABLE dba.DeleteTest
+		ADD CONSTRAINT PK_DeleteTest PRIMARY KEY CLUSTERED (Id)
+
+	BEGIN TRANSACTION
+	INSERT INTO dba.Customers (CustomerId, Name, Address) VALUES (1, 'Test', '100 Road')
+	INSERT INTO dba.Orders (OrderId, OrderDate, CustomerId) VALUES (1, '20101010 00:00:00.000', 1)
+	INSERT INTO dba.Items (ItemId, Name, Price) VALUES (1, 'Widget', 4.5000)
+	INSERT INTO dba.OrderItems (OrderItemId, OrderId, ItemId, Quantity) VALUES (1, 1, 1, 10)
+	INSERT INTO dba.Users (Id, Name, Password, Age) VALUES (1,'Bob','Bob',32)
+	INSERT INTO dba.Users (Id, Name, Password, Age) VALUES (2,'Charlie','Charlie',49)
+	INSERT INTO dba.Users (Id, Name, Password, Age) VALUES (3,'Dave','Dave',12)
+	
+	DECLARE @PagingId INT
+	SET @PagingId = 1
+	WHILE @PagingId <= 100
+	BEGIN
+		INSERT INTO dba.PagingTest (Id) VALUES (@PagingId)
+		SET @PagingId = @PagingId + 1
+	END
+	
+	COMMIT TRANSACTION
+
+	ALTER TABLE dba.Orders
+		ADD CONSTRAINT FK_Orders_Customers FOREIGN KEY (CustomerId) REFERENCES dba.Customers (CustomerId)
+
+	ALTER TABLE dba.OrderItems
+		ADD CONSTRAINT FK_OrderItems_Items FOREIGN KEY (ItemId) REFERENCES dba.Items (ItemId)
+
+	ALTER TABLE dba.OrderItems
+		ADD CONSTRAINT FK_OrderItems_Orders FOREIGN KEY (OrderId) REFERENCES dba.Orders (OrderId)
+END
+;
+CALL dba.TestReset
+;
+CREATE TABLE dba.SchemaTable (Id int not null, Description varchar(100) not null)
+;
+INSERT INTO dba.SchemaTable VALUES (1, 'Pass')
+;
+GRANT CONNECT TO test
+;
+CREATE TABLE test.SchemaTable (Id int not null, Description varchar(100) not null)
+;
+CREATE PROCEDURE dba.GetCustomers
+AS
+BEGIN
+    SELECT * FROM Customers
+    ORDER BY CustomerId
+END
+;
+CREATE PROCEDURE dba.GetCustomerAndOrders (IN @CustomerId int)
+AS
+BEGIN
+    SELECT * FROM Customers WHERE CustomerId = @CustomerId
+    SELECT * FROM Orders WHERE CustomerId = @CustomerId
+END
+;
+CREATE FUNCTION "DBA"."GetCustomerCount"() RETURNS INT
+BEGIN
+    RETURN 1 
+END
+;
+CREATE FUNCTION dba.VarcharAndReturnInt (IN @AValue varchar(50)) RETURNS INT
+BEGIN
+  IF ISNUMERIC(@AValue) = 1 THEN
+    RETURN cast (@AValue as int)
+  END IF;
+  RETURN 42
+END
+;
+CREATE TABLE dba.GroupTestMaster (
+		Id       INT            NOT NULL DEFAULT AUTOINCREMENT,
+		Name     VARCHAR (100) NOT NULL
+	)
+;
+ALTER TABLE dba.GroupTestMaster
+	ADD CONSTRAINT PK_GroupTestMaster PRIMARY KEY CLUSTERED (Id)
+;
+CREATE TABLE dba.GroupTestDetail (
+		Id    INT      NOT NULL DEFAULT AUTOINCREMENT,
+		"Date"  DATETIME NOT NULL,
+		Number INT NOT NULL,
+		MasterId INT      NOT NULL
+	)
+;
+ALTER TABLE dba.GroupTestDetail
+	ADD CONSTRAINT PK_GroupTestDetail PRIMARY KEY CLUSTERED (Id)
+;
+ALTER TABLE dba.GroupTestDetail
+	ADD CONSTRAINT FK_GroupTestDetail_GroupTestMaster FOREIGN KEY (MasterId) REFERENCES dba.GroupTestMaster (Id)
+;
+INSERT INTO dba.GroupTestMaster(Name) VALUES ('One')
+;
+INSERT INTO dba.GroupTestMaster(Name) VALUES ('Two')
+;
+INSERT INTO dba.GroupTestDetail("Date", Number, MasterId) VALUES ('1999-1-1',1,1)
+;
+INSERT INTO dba.GroupTestDetail("Date", Number, MasterId) VALUES ('2000-1-1',2,1)
+;
+INSERT INTO dba.GroupTestDetail("Date", Number, MasterId) VALUES ('2001-1-1',3,1)
+;
+INSERT INTO dba.GroupTestDetail("Date", Number, MasterId) VALUES ('2010-1-1',2,2)
+;
+INSERT INTO dba.GroupTestDetail("Date", Number, MasterId) VALUES ('2011-1-1',3,2)
+;
+COMMIT
+
