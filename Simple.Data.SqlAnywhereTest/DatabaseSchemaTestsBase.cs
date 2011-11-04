@@ -12,12 +12,13 @@ namespace Simple.Data.TestHelper
     public abstract class DatabaseSchemaTestsBase
     {
         private DatabaseSchema _schema;
+        private readonly ProviderHelper _providerHelper = new ProviderHelper();
 
         private DatabaseSchema GetSchema()
         {
             var adapter = GetDatabase().GetAdapter() as AdoAdapter;
             if (adapter == null) Assert.Fail("Expected an ADO-based database adapter.");
-            return adapter.GetSchema();
+            return DatabaseSchema.Get(adapter.ConnectionProvider, _providerHelper);
         }
 
         protected abstract Database GetDatabase();
