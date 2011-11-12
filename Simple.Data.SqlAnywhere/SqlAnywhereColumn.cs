@@ -22,7 +22,7 @@
         }
 
         public SqlAnywhereColumn(string actualName, Table table, bool isIdentity, SADbType saDbType, int maxLength)
-            : base(actualName, table, isIdentity, default(DbType), maxLength)
+            : base(actualName, table, isIdentity, DbTypeLookup.GetDbType(saDbType) ?? default(DbType), maxLength)
         {
             _saDbType = saDbType;
         }
