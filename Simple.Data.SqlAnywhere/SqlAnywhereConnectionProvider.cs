@@ -12,18 +12,39 @@ namespace Simple.Data.SqlAnywhere
 {
     [Export(typeof(IConnectionProvider))]
     [Export("iAnywhere.Data.SqlAnywhere", typeof(IConnectionProvider))]
-    public class SqlAnywhereConnectionProvider : IConnectionProvider
+    public class SqlAnywhereConnectionProvider : IConnectionProvider, IServiceProvider
     {
         private string _connectionString;
+        private SqlAnywhereQueryPager _queryPager;
 
         public SqlAnywhereConnectionProvider()
         {
             
         }
 
+        internal Boolean GetSupportsCommonTableExpressions()
+        {
+            try
+            {
+                using (var connection = this.CreateConnection() as SAConnection)
+                {
+                    connection.Open();
+                    var version = new Version(connection.ServerVersion);
+                    return version.Major > 8;
+                }
+            }
+            catch
+            { }
+            return false;
+        }
+
         public SqlAnywhereConnectionProvider(string connectionString)
         {
-            _connectionString = connectionString;
+            if (_connectionString != connectionString)
+            {
+                _connectionString = connectionString;
+                _queryPager = null;
+            }
         }
 
         public IDbConnection CreateConnection()
@@ -79,6 +100,15 @@ namespace Simple.Data.SqlAnywhere
         public IProcedureExecutor GetProcedureExecutor(AdoAdapter adapter, ObjectName procedureName)
         {
             return new ProcedureExecutor(adapter, procedureName);
+        }
+
+        public object GetService(Type serviceType)
+        {
+            if (serviceType == typeof(IQueryPager))
+            {
+                return _queryPager ?? (_queryPager = new SqlAnywhereQueryPager(this.GetSupportsCommonTableExpressions()));
+            }
+            return null;
         }
     }
 }
