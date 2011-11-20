@@ -7,7 +7,7 @@ http://github.com/markrendle/Simple.Data
 * SQL Anywhere 11.0.1 - all tests passing.
 * SQL Anywhere 10.0.0 - all tests passing.
 * SQL Anywhere 9.0.2 - all tests passing.
-* SQL Anywhere 8.0.3 - 74/87 tests passing (as of Nov 12th 2011); All failing tests are related to paging.
+* SQL Anywhere 8.0.3 - 78/87 tests passing (as of Nov 20th 2011); All failing tests are related to paging.
 
 ##Genesis
 The initial code & test assemblies were taken from the SQL Server code & test assemblies and therefore it should be pretty easy to transfer skills from SQL Server to SQL Anywhere.
