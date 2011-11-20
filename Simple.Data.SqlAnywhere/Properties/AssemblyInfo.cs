@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyCompany("Simple.Data.SqlAnywhere")]
 [assembly: AssemblyProduct("Simple.Data.SqlAnywhere")]
-[assembly: AssemblyCopyright("Copyright © Richard Hopton 2010-2011")]
+[assembly: AssemblyCopyright("Copyright © Richard Hopton 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -28,6 +28,6 @@ using System.Runtime.InteropServices;
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
 
-[assembly: AssemblyVersion("0.9.8.2")]
-[assembly: AssemblyFileVersion("0.9.8.2")]
+[assembly: AssemblyVersion("0.10.0.1")]
+[assembly: AssemblyFileVersion("0.10.0.1")]
 
