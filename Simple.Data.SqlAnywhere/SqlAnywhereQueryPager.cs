@@ -43,8 +43,7 @@ namespace Simple.Data.SqlAnywhere
             else
             {
                 withTable = "#__Data";
-                //builder.AppendLine("BEGIN");
-                builder.Append("SELECT ");
+                builder.AppendFormat("SELECT TOP {0} ", take+skip);
                 builder.Append(columns);
                 builder.Append(", CAST(NUMBER() AS INT) AS [_#_]");
                 builder.AppendLine();
