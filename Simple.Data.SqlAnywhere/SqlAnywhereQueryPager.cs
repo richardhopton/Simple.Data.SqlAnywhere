@@ -28,6 +28,21 @@ namespace Simple.Data.SqlAnywhere
             var orderBy = ExtractOrderBy(columns, ref fromEtc);
             var withTable = "__Data";
 
+            var rangeFormat = default(String);
+            if ((skip > 0) && take < 2147483646)
+            {
+                rangeFormat = "BETWEEN {0} AND {1}";
+            }
+            else if (skip > 0)
+            {
+                rangeFormat = ">= {0}";
+            }
+            else
+            {
+                rangeFormat = "<= {1}";
+            }
+            var range = String.Format(rangeFormat, skip + 1, take + skip);
+
             if (supportsCommonTableExpressions)
             {
                 builder.AppendFormat("WITH {0} AS (SELECT ", withTable);
@@ -36,26 +51,34 @@ namespace Simple.Data.SqlAnywhere
                 builder.AppendLine();
                 builder.Append(fromEtc);
                 builder.AppendLine(")");
-                builder.AppendFormat("SELECT {0} FROM {1} WHERE [_#_] BETWEEN {2} AND {3}", DequalifyColumns(columns), withTable,
-                                     skip + 1, take + skip);
+                builder.AppendFormat("SELECT {0} FROM {1} WHERE [_#_] {2}", DequalifyColumns(columns), withTable, range);
                 yield return builder.ToString();
             }
             else
             {
                 withTable = "#__Data";
-                builder.AppendFormat("SELECT TOP {0} ", take+skip);
+                builder.Append("SELECT ");
+                if (take < 32768)
+                {
+                    builder.AppendFormat("TOP {0} ", take + skip);
+                }
                 builder.Append(columns);
-                builder.Append(", CAST(NUMBER() AS INT) AS [_#_]");
-                builder.AppendLine();
-                builder.AppendFormat("INTO {0}", withTable);
+                if (skip > 0)
+                {
+                    builder.Append(", CAST(NUMBER() AS INT) AS [_#_]");
+                    builder.AppendLine();
+                    builder.AppendFormat("INTO {0}", withTable);
+                }
                 builder.AppendLine();
                 builder.Append(fromEtc);
                 builder.AppendLine();
                 builder.Append(orderBy);
                 yield return builder.ToString();
-                yield return String.Format("SELECT {0} FROM {1} WHERE [_#_] BETWEEN {2} AND {3}", DequalifyColumns(columns), withTable,
-                                     skip + 1, take + skip);
-                yield return String.Format("DROP TABLE {0}", withTable);
+                if (skip > 0)
+                {
+                    yield return String.Format("SELECT {0} FROM {1} WHERE [_#_] {2}", DequalifyColumns(columns), withTable, range);
+                    yield return String.Format("DROP TABLE {0}", withTable);
+                }
             }
         }
 

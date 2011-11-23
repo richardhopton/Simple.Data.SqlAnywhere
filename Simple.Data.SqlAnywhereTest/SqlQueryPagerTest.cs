@@ -70,11 +70,40 @@ namespace Simple.Data.SqlAnywhereTest
         }
 
         [Test]
+        public void ShouldCopeWithNoTake_CTE()
+        {
+            var sql = "select a,b,c from d where a = 1";
+            var expected = new[]{
+                "with __data as (select a,b,c, row_number() over(order by a) as [_#_] from d where a = 1)"
+                + " select a,b,c from __data where [_#_] >= 31"};
+
+
+            var pagedSql = new SqlAnywhereQueryPager(true).ApplyPaging(sql, 30, Int32.MaxValue);
+            var modified = pagedSql.Select(x => Normalize.Replace(x, " ").ToLowerInvariant());
+
+            Assert.IsTrue(expected.SequenceEqual(modified));
+        }
+
+        [Test]
+        public void ShouldCopeWithNoSkip_CTE()
+        {
+            var sql = "select a,b,c from d where a = 1";
+            var expected = new[]{
+                "with __data as (select a,b,c, row_number() over(order by a) as [_#_] from d where a = 1)"
+                + " select a,b,c from __data where [_#_] <= 15"};
+
+            var pagedSql = new SqlAnywhereQueryPager(true).ApplyPaging(sql, 0, 15);
+            var modified = pagedSql.Select(x => Normalize.Replace(x, " ").ToLowerInvariant());
+
+            Assert.IsTrue(expected.SequenceEqual(modified));
+        }
+
+        [Test]
         public void ShouldApplyPagingUsingOrderBy_NoCTE()
         {
             var sql = "select a,b,c from d where a = 1 order by c";
             var expected = new[] {
-                "select a,b,c, cast(number() as int) as [_#_] into #__data from d where a = 1 order by c",
+                "select top 15 a,b,c, cast(number() as int) as [_#_] into #__data from d where a = 1 order by c",
                 "select a,b,c from #__data where [_#_] between 6 and 15",
                 "drop table #__data"};
 
@@ -89,7 +118,7 @@ namespace Simple.Data.SqlAnywhereTest
         {
             var sql = "select a,b,c from d where a = 1";
             var expected = new[]{
-                "select a,b,c, cast(number() as int) as [_#_] into #__data from d where a = 1 order by a",
+                "select top 30 a,b,c, cast(number() as int) as [_#_] into #__data from d where a = 1 order by a",
                 "select a,b,c from #__data where [_#_] between 11 and 30",
                 "drop table #__data"};
 
@@ -104,7 +133,7 @@ namespace Simple.Data.SqlAnywhereTest
         {
             var sql = "select [a],[b] as [foo],[c] from [d] where [a] = 1";
             var expected = new[] {
-                "select [a],[b] as [foo],[c], cast(number() as int) as [_#_] into #__data from [d] where [a] = 1 order by [a]",
+                "select top 25 [a],[b] as [foo],[c], cast(number() as int) as [_#_] into #__data from [d] where [a] = 1 order by [a]",
                 "select [a],[foo],[c] from #__data where [_#_] between 21 and 25",
                 "drop table #__data"};
 
@@ -119,11 +148,40 @@ namespace Simple.Data.SqlAnywhereTest
         {
             var sql = "select [a] as [foo],[b],[c] from [d] where [a] = 1";
             var expected = new[]{
-                "select [a] as [foo],[b],[c], cast(number() as int) as [_#_] into #__data from [d] where [a] = 1 order by [a]",
+                "select top 40 [a] as [foo],[b],[c], cast(number() as int) as [_#_] into #__data from [d] where [a] = 1 order by [a]",
                 "select [foo],[b],[c] from #__data where [_#_] between 31 and 40",
                 "drop table #__data"};
 
             var pagedSql = new SqlAnywhereQueryPager(false).ApplyPaging(sql, 30, 10);
+            var modified = pagedSql.Select(x => Normalize.Replace(x, " ").ToLowerInvariant());
+
+            Assert.IsTrue(expected.SequenceEqual(modified));
+        }
+
+        [Test]
+        public void ShouldCopeWithNoTake_NoCTE()
+        {
+            var sql = "select a,b,c from d where a = 1";
+            var expected = new[]{
+                "select a,b,c, cast(number() as int) as [_#_] into #__data from d where a = 1 order by a",
+                "select a,b,c from #__data where [_#_] >= 31",
+                "drop table #__data"};
+
+
+            var pagedSql = new SqlAnywhereQueryPager(false).ApplyPaging(sql, 30, Int32.MaxValue);
+            var modified = pagedSql.Select(x => Normalize.Replace(x, " ").ToLowerInvariant());
+
+            Assert.IsTrue(expected.SequenceEqual(modified));
+        }
+
+        [Test]
+        public void ShouldCopeWithNoSkip_NoCTE()
+        {
+            var sql = "select a,b,c from d where a = 1";
+            var expected = new[] { "select top 15 a,b,c from d where a = 1 order by a" };
+
+
+            var pagedSql = new SqlAnywhereQueryPager(false).ApplyPaging(sql, 0, 15);
             var modified = pagedSql.Select(x => Normalize.Replace(x, " ").ToLowerInvariant());
 
             Assert.IsTrue(expected.SequenceEqual(modified));
