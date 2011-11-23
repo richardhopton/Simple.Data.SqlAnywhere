@@ -186,5 +186,61 @@ namespace Simple.Data.SqlAnywhereTest
 
             Assert.AreEqual(String.Join("\n", expected), String.Join("\n", modified));
         }
+
+        [Test]
+        public void ShouldNotOutputTopWithATakeGreaterThan32767_NoCTE()
+        {
+            var sql = "select a,b,c from d where a = 1";
+            var expected = new[] { "select a,b,c from d where a = 1 order by a" };
+
+            var pagedSql = new SqlAnywhereQueryPager(false).ApplyPaging(sql, 0, 32768);
+            var modified = pagedSql.Select(x => Normalize.Replace(x, " ").ToLowerInvariant());
+
+            Assert.AreEqual(String.Join("\n", expected), String.Join("\n", modified));
+        }
+
+        [Test]
+        public void ShouldOutputTopWithATakeLessThan32768_NoCTE()
+        {
+            var sql = "select a,b,c from d where a = 1";
+            var expected = new[] { "select top 32767 a,b,c from d where a = 1 order by a" };
+
+            var pagedSql = new SqlAnywhereQueryPager(false).ApplyPaging(sql, 0, 32767);
+            var modified = pagedSql.Select(x => Normalize.Replace(x, " ").ToLowerInvariant());
+
+            Assert.AreEqual(String.Join("\n", expected), String.Join("\n", modified));
+        }
+
+        [Test]
+        public void ShouldOutputTopWithASkipOf10AndTakeLessThan32758_NoCTE()
+        {
+            var sql = "select a,b,c from d where a = 1";
+            var expected = new[]{
+                "select top 32767 a,b,c, cast(number() as int) as [_#_] into #__data from d where a = 1 order by a",
+                "select a,b,c from #__data where [_#_] between 11 and 32767",
+                "drop table #__data"};
+
+
+            var pagedSql = new SqlAnywhereQueryPager(false).ApplyPaging(sql, 10, 32757);
+            var modified = pagedSql.Select(x => Normalize.Replace(x, " ").ToLowerInvariant());
+
+            Assert.AreEqual(String.Join("\n", expected), String.Join("\n", modified));
+        }
+
+        [Test]
+        public void ShouldNotOutputTopWithASkipOf10AndGreaterThan32757_NoCTE()
+        {
+            var sql = "select a,b,c from d where a = 1";
+            var expected = new[]{
+                "select a,b,c, cast(number() as int) as [_#_] into #__data from d where a = 1 order by a",
+                "select a,b,c from #__data where [_#_] between 11 and 32768",
+                "drop table #__data"};
+
+
+            var pagedSql = new SqlAnywhereQueryPager(false).ApplyPaging(sql, 10, 32758);
+            var modified = pagedSql.Select(x => Normalize.Replace(x, " ").ToLowerInvariant());
+
+            Assert.AreEqual(String.Join("\n", expected), String.Join("\n", modified));
+        }
     }
 }

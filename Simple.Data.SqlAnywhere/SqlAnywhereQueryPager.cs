@@ -28,12 +28,18 @@ namespace Simple.Data.SqlAnywhere
             var orderBy = ExtractOrderBy(columns, ref fromEtc);
             var withTable = "__Data";
 
+            var rangeMin = skip + 1;
+            var rangeMax = take + skip;
+            if (rangeMax < 0)
+            {
+                rangeMax = 2147483646;
+            }
             var rangeFormat = default(String);
-            if ((skip > 0) && take < 2147483646)
+            if ((rangeMin > 1) && (rangeMax < 2147483646))
             {
                 rangeFormat = "BETWEEN {0} AND {1}";
             }
-            else if (skip > 0)
+            else if (rangeMin > 1)
             {
                 rangeFormat = ">= {0}";
             }
@@ -41,7 +47,7 @@ namespace Simple.Data.SqlAnywhere
             {
                 rangeFormat = "<= {1}";
             }
-            var range = String.Format(rangeFormat, skip + 1, take + skip);
+            var range = String.Format(rangeFormat, rangeMin, rangeMax);
 
             if (supportsCommonTableExpressions)
             {
@@ -58,7 +64,7 @@ namespace Simple.Data.SqlAnywhere
             {
                 withTable = "#__Data";
                 builder.Append("SELECT ");
-                if (take < 32768)
+                if (rangeMax < 32768)
                 {
                     builder.AppendFormat("TOP {0} ", take + skip);
                 }
