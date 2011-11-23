@@ -24,7 +24,7 @@ namespace Simple.Data.SqlAnywhereTest
             var pagedSql = new SqlAnywhereQueryPager(true).ApplyPaging(sql, 5, 10);
             var modified = pagedSql.Select(x => Normalize.Replace(x, " ").ToLowerInvariant());
 
-            Assert.IsTrue(expected.SequenceEqual(modified));
+            Assert.AreEqual(String.Join("\n", expected), String.Join("\n", modified));
         }
 
         [Test]
@@ -38,7 +38,7 @@ namespace Simple.Data.SqlAnywhereTest
             var pagedSql = new SqlAnywhereQueryPager(true).ApplyPaging(sql, 10, 20);
             var modified = pagedSql.Select(x => Normalize.Replace(x, " ").ToLowerInvariant());
 
-            Assert.IsTrue(expected.SequenceEqual(modified));
+            Assert.AreEqual(String.Join("\n", expected), String.Join("\n", modified));
         }
 
         [Test]
@@ -52,7 +52,7 @@ namespace Simple.Data.SqlAnywhereTest
             var pagedSql = new SqlAnywhereQueryPager(true).ApplyPaging(sql, 20, 5);
             var modified = pagedSql.Select(x => Normalize.Replace(x, " ").ToLowerInvariant());
 
-            Assert.IsTrue(expected.SequenceEqual(modified));
+            Assert.AreEqual(String.Join("\n", expected), String.Join("\n", modified));
         }
 
         [Test]
@@ -66,7 +66,7 @@ namespace Simple.Data.SqlAnywhereTest
             var pagedSql = new SqlAnywhereQueryPager(true).ApplyPaging(sql, 30, 10);
             var modified = pagedSql.Select(x => Normalize.Replace(x, " ").ToLowerInvariant());
 
-            Assert.IsTrue(expected.SequenceEqual(modified));
+            Assert.AreEqual(String.Join("\n", expected), String.Join("\n", modified));
         }
 
         [Test]
@@ -81,7 +81,7 @@ namespace Simple.Data.SqlAnywhereTest
             var pagedSql = new SqlAnywhereQueryPager(true).ApplyPaging(sql, 30, Int32.MaxValue);
             var modified = pagedSql.Select(x => Normalize.Replace(x, " ").ToLowerInvariant());
 
-            Assert.IsTrue(expected.SequenceEqual(modified));
+            Assert.AreEqual(String.Join("\n", expected), String.Join("\n", modified));
         }
 
         [Test]
@@ -95,7 +95,7 @@ namespace Simple.Data.SqlAnywhereTest
             var pagedSql = new SqlAnywhereQueryPager(true).ApplyPaging(sql, 0, 15);
             var modified = pagedSql.Select(x => Normalize.Replace(x, " ").ToLowerInvariant());
 
-            Assert.IsTrue(expected.SequenceEqual(modified));
+            Assert.AreEqual(String.Join("\n", expected), String.Join("\n", modified));
         }
 
         [Test]
@@ -110,7 +110,7 @@ namespace Simple.Data.SqlAnywhereTest
             var pagedSql = new SqlAnywhereQueryPager(false).ApplyPaging(sql, 5, 10);
             var modified = pagedSql.Select(x => Normalize.Replace(x, " ").ToLowerInvariant());
 
-            Assert.IsTrue(expected.SequenceEqual(modified));
+            Assert.AreEqual(String.Join("\n", expected), String.Join("\n", modified));
         }
 
         [Test]
@@ -125,7 +125,7 @@ namespace Simple.Data.SqlAnywhereTest
             var pagedSql = new SqlAnywhereQueryPager(false).ApplyPaging(sql, 10, 20);
             var modified = pagedSql.Select(x => Normalize.Replace(x, " ").ToLowerInvariant());
 
-            Assert.IsTrue(expected.SequenceEqual(modified));
+            Assert.AreEqual(String.Join("\n", expected), String.Join("\n", modified));
         }
 
         [Test]
@@ -140,7 +140,7 @@ namespace Simple.Data.SqlAnywhereTest
             var pagedSql = new SqlAnywhereQueryPager(false).ApplyPaging(sql, 20, 5);
             var modified = pagedSql.Select(x => Normalize.Replace(x, " ").ToLowerInvariant());
 
-            Assert.IsTrue(expected.SequenceEqual(modified));
+            Assert.AreEqual(String.Join("\n", expected), String.Join("\n", modified));
         }
 
         [Test]
@@ -155,7 +155,7 @@ namespace Simple.Data.SqlAnywhereTest
             var pagedSql = new SqlAnywhereQueryPager(false).ApplyPaging(sql, 30, 10);
             var modified = pagedSql.Select(x => Normalize.Replace(x, " ").ToLowerInvariant());
 
-            Assert.IsTrue(expected.SequenceEqual(modified));
+            Assert.AreEqual(String.Join("\n", expected), String.Join("\n", modified));
         }
 
         [Test]
@@ -171,7 +171,7 @@ namespace Simple.Data.SqlAnywhereTest
             var pagedSql = new SqlAnywhereQueryPager(false).ApplyPaging(sql, 30, Int32.MaxValue);
             var modified = pagedSql.Select(x => Normalize.Replace(x, " ").ToLowerInvariant());
 
-            Assert.IsTrue(expected.SequenceEqual(modified));
+            Assert.AreEqual(String.Join("\n", expected), String.Join("\n", modified));
         }
 
         [Test]
@@ -184,7 +184,7 @@ namespace Simple.Data.SqlAnywhereTest
             var pagedSql = new SqlAnywhereQueryPager(false).ApplyPaging(sql, 0, 15);
             var modified = pagedSql.Select(x => Normalize.Replace(x, " ").ToLowerInvariant());
 
-            Assert.IsTrue(expected.SequenceEqual(modified));
+            Assert.AreEqual(String.Join("\n", expected), String.Join("\n", modified));
         }
     }
 }
