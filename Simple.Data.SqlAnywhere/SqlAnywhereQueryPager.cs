@@ -69,7 +69,7 @@ namespace Simple.Data.SqlAnywhere
                     builder.AppendFormat("TOP {0} ", take + skip);
                 }
                 builder.Append(columns);
-                if (skip > 0)
+                if ((rangeMin > 1) || (rangeMax >= 32768))
                 {
                     builder.Append(", CAST(NUMBER() AS INT) AS [_#_]");
                     builder.AppendLine();
@@ -80,7 +80,7 @@ namespace Simple.Data.SqlAnywhere
                 builder.AppendLine();
                 builder.Append(orderBy);
                 yield return builder.ToString();
-                if (skip > 0)
+                if ((rangeMin > 1) || (rangeMax >= 32768))
                 {
                     yield return String.Format("SELECT {0} FROM {1} WHERE [_#_] {2}", DequalifyColumns(columns), withTable, range);
                     yield return String.Format("DROP TABLE {0}", withTable);

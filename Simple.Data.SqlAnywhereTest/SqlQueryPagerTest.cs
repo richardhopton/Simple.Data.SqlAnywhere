@@ -191,7 +191,10 @@ namespace Simple.Data.SqlAnywhereTest
         public void ShouldNotOutputTopWithATakeGreaterThan32767_NoCTE()
         {
             var sql = "select a,b,c from d where a = 1";
-            var expected = new[] { "select a,b,c from d where a = 1 order by a" };
+            var expected = new[] {
+                "select a,b,c, cast(number() as int) as [_#_] into #__data from d where a = 1 order by a",
+                "select a,b,c from #__data where [_#_] <= 32768",
+                "drop table #__data"};
 
             var pagedSql = new SqlAnywhereQueryPager(false).ApplyPaging(sql, 0, 32768);
             var modified = pagedSql.Select(x => Normalize.Replace(x, " ").ToLowerInvariant());
