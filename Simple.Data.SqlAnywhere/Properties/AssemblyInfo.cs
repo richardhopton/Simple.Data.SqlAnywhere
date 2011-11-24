@@ -2,21 +2,17 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-[assembly: AssemblyTitle("Simple.Data.SqlAnywhere")]
-[assembly: AssemblyDescription("SQL Anywhere add-in for ADO adapter.")]
-
-// The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("66a1ced9-a6cf-4c5c-8fc1-2f40443ac6bb")]
-
 #if(DEBUG)
 [assembly: AssemblyConfiguration("Debug")]
 #else
 [assembly: AssemblyConfiguration("Release")]
 #endif
 
+// General Information about an assembly is controlled through the following 
+// set of attributes. Change these attribute values to modify the information
+// associated with an assembly.
+[assembly: AssemblyTitle("Simple.Data.SqlAnywhere")]
+[assembly: AssemblyDescription("SQL Anywhere add-in for ADO adapter.")]
 [assembly: AssemblyCompany("Simple.Data.SqlAnywhere")]
 [assembly: AssemblyProduct("Simple.Data.SqlAnywhere")]
 [assembly: AssemblyCopyright("Copyright © Richard Hopton 2011")]
@@ -28,6 +24,6 @@ using System.Runtime.InteropServices;
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
 
-[assembly: AssemblyVersion("0.10.2.1")]
-[assembly: AssemblyFileVersion("0.10.2.1")]
+[assembly: AssemblyVersion("0.11.1.1")]
+[assembly: AssemblyFileVersion("0.11.1.1")]
 
