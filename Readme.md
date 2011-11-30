@@ -12,5 +12,8 @@ http://github.com/markrendle/Simple.Data
 ##Genesis
 The initial code & test assemblies were taken from the SQL Server code & test assemblies and therefore it should be pretty easy to transfer skills from SQL Server to SQL Anywhere.
 
+##Optimizations
+To maintain feature parity with Simple.Data.SqlServer a number of features are supported in sub-optimal ways such as paging on 8.0.3 & bulk inserts before 10.0.0.
+
 ##Requirements
 iAnywhere.Data.SQLAnywhere.v4.0.dll version 12.0.1 from the SQL Anywhere installation - http://www.sybase.com/products/databasemanagement/sqlanywhere
