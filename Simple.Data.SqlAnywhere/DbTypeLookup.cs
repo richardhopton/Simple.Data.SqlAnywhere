@@ -22,9 +22,13 @@ namespace Simple.Data.SqlAnywhere
             SADbType.Money, SADbType.NChar, SADbType.NText, SADbType.Numeric, SADbType.NVarChar, SADbType.Real, SADbType.SmallDateTime, SADbType.SmallInt, SADbType.SmallMoney, SADbType.SysName, SADbType.Text, SADbType.Time, SADbType.TimeStamp, SADbType.TimeStampWithTimeZone, SADbType.TinyInt, SADbType.UniqueIdentifier, 
             SADbType.UniqueIdentifierStr, SADbType.UnsignedBigInt, SADbType.UnsignedInt, SADbType.UnsignedSmallInt, SADbType.VarBinary, SADbType.VarBit, SADbType.VarChar, SADbType.Xml, SADbType.LongVarchar
         };
+        private static readonly Type[] ClrTypes = new[]{
+            typeof(Int64), typeof(Byte[]), typeof(Boolean), typeof(String), typeof(DateTime), typeof(DateTime), typeof(DateTime), typeof(Decimal), typeof(Double), typeof(Single), typeof(Byte[]), typeof(Int32), typeof(Byte[]), typeof(String), typeof(String), typeof(String),
+            typeof(Decimal), typeof(String), typeof(String), typeof(Decimal), typeof(String), typeof(Single), typeof(DateTime), typeof(Int16), typeof(Decimal), typeof(String), typeof(String), typeof(TimeSpan), typeof(DateTime), typeof(DateTime), typeof(Byte), typeof(Guid),
+            typeof(String), typeof(UInt64), typeof(UInt32), typeof(UInt16), typeof(Byte[]), typeof(String), typeof(String), typeof(String), typeof(String) 
+        };
 
-        private static TTarget? FindTargetValue<TSource, TTarget>(TSource sourceValue, TSource[] sourceArray, TTarget[] targetArray, Func<TSource, TSource, Boolean> matches)
-            where TTarget : struct
+        private static Boolean FindTargetValue<TSource, TTarget>(TSource sourceValue, TSource[] sourceArray, TTarget[] targetArray, out TTarget target, Func<TSource, TSource, Boolean> matches)
         {
             var index = -1;
             for (int i = 0; i < sourceArray.Length; i++)
@@ -37,19 +41,39 @@ namespace Simple.Data.SqlAnywhere
             }
             if ((index > -1) && (index < targetArray.Length))
             {
-                return targetArray[index];
+                target = targetArray[index];
+                return true;
+            }
+            target = default(TTarget);
+            return false;
+        }
+
+        public static SADbType? GetSADbType(string typeName)
+        {
+            var target = default(SADbType);
+            if (FindTargetValue(typeName, SADbTypeNames, SADbTypes, out target,
+                    (x, y) => String.Equals(x, y, StringComparison.OrdinalIgnoreCase)))
+            {
+                return target;
             }
             return null;
         }
-        
-        public static SADbType? GetSADbType(string typeName)
+
+        public static DbType? GetDbType(this SADbType saDbType)
         {
-            return FindTargetValue(typeName, SADbTypeNames, SADbTypes, (x, y) => String.Equals(x, y, StringComparison.OrdinalIgnoreCase));
+            var target = default(DbType);
+            if (FindTargetValue(saDbType, SADbTypes, DbTypes, out target, (x, y) => x == y))
+            {
+                return target;
+            }
+            return null;
         }
 
-        public static DbType? GetDbType(SADbType saDbType)
+        public static Type GetClrType(this SADbType saDbType)
         {
-            return FindTargetValue(saDbType, SADbTypes, DbTypes, (x,y) => x==y);
+            var target = default(Type);
+            FindTargetValue(saDbType, SADbTypes, ClrTypes, out target, (x, y) => x == y);
+            return target;
         }
     }
 }

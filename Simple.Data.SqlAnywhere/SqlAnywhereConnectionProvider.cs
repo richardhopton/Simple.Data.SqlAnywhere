@@ -15,27 +15,40 @@ namespace Simple.Data.SqlAnywhere
     public class SqlAnywhereConnectionProvider : IConnectionProvider, IServiceProvider
     {
         private string _connectionString;
-        private SqlAnywhereQueryPager _queryPager;
+        private Version _version;
 
         public SqlAnywhereConnectionProvider()
         {
             
         }
 
-        internal Boolean GetSupportsCommonTableExpressions()
+        private Version GetVersion()
         {
+            if (this._version != null)
+            {
+                return this._version;
+            }
             try
             {
                 using (var connection = this.CreateConnection() as SAConnection)
                 {
                     connection.Open();
-                    var version = new Version(connection.ServerVersion);
-                    return version.Major > 8;
+                    return new Version(connection.ServerVersion);
                 }
             }
             catch
             { }
-            return false;
+            return new Version();
+        }
+
+        private Boolean GetSupportsCommonTableExpressions()
+        {
+            return this.GetVersion().Major > 8;
+        }
+
+        private Boolean GetSupportsBulkInserter()
+        {
+            return this.GetVersion().Major > 9;
         }
 
         public SqlAnywhereConnectionProvider(string connectionString)
@@ -43,7 +56,7 @@ namespace Simple.Data.SqlAnywhere
             if (_connectionString != connectionString)
             {
                 _connectionString = connectionString;
-                _queryPager = null;
+                _version = null;
             }
         }
 
@@ -106,7 +119,12 @@ namespace Simple.Data.SqlAnywhere
         {
             if (serviceType == typeof(IQueryPager))
             {
-                return _queryPager ?? (_queryPager = new SqlAnywhereQueryPager(this.GetSupportsCommonTableExpressions()));
+                return new SqlAnywhereQueryPager(this.GetSupportsCommonTableExpressions());
+            }
+            if ((serviceType == typeof(IBulkInserter)) &&
+                this.GetSupportsBulkInserter())
+            {
+                return new SqlAnywhereBulkInserter();
             }
             return null;
         }

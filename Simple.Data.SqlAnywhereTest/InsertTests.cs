@@ -71,6 +71,35 @@ namespace Simple.Data.SqlAnywhereTest
         }
 
         [Test]
+        public void TestMultiInsertWithStaticTypeObjectsAndNoReturn()
+        {
+            var db = DatabaseHelper.Open();
+
+            var users = new[]
+                            {
+                                new User { Name = "Slartibartfast", Password = "bistromathics", Age = 777 },
+                                new User { Name = "Wowbagger", Password = "teatime", Age = int.MaxValue }
+                            };
+
+            db.Users.Insert(users);
+
+            var slartibartfast = db.Users.FindByName("Slartibartfast");
+            Assert.IsNotNull(slartibartfast);
+            Assert.AreNotEqual(0, slartibartfast.Id);
+            Assert.AreEqual("Slartibartfast", slartibartfast.Name);
+            Assert.AreEqual("bistromathics", slartibartfast.Password);
+            Assert.AreEqual(777, slartibartfast.Age);
+
+            var wowbagger = db.Users.FindByName("Wowbagger");
+            Assert.IsNotNull(wowbagger);
+
+            Assert.AreNotEqual(0, wowbagger.Id);
+            Assert.AreEqual("Wowbagger", wowbagger.Name);
+            Assert.AreEqual("teatime", wowbagger.Password);
+            Assert.AreEqual(int.MaxValue, wowbagger.Age);
+        }
+        
+        [Test]
         public void TestInsertWithDynamicTypeObject()
         {
             var db = DatabaseHelper.Open();
