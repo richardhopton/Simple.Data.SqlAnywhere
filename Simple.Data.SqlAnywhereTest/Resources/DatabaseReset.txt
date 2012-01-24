@@ -67,6 +67,8 @@ BEGIN
 		DROP TABLE dba.EnumTest
 	IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id=OBJECT_ID('dba.DeleteTest') AND type='U')
 		DROP TABLE dba.DeleteTest
+	IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id=OBJECT_ID('dba.DecimalTest') AND type='U')
+		DROP TABLE dba.DecimalTest
 	
 	CREATE TABLE dba.Users (
 		Id       INT            NOT NULL DEFAULT AUTOINCREMENT,
@@ -154,6 +156,11 @@ BEGIN
 	ALTER TABLE dba.DeleteTest
 		ADD CONSTRAINT PK_DeleteTest PRIMARY KEY CLUSTERED (Id)
 
+	CREATE TABLE dba.DecimalTest(
+		Id int NOT NULL DEFAULT AUTOINCREMENT,
+		Value decimal(20,6) NOT NULL
+	)
+
 	BEGIN TRANSACTION
 	INSERT INTO dba.Customers (CustomerId, Name, Address) VALUES (1, 'Test', '100 Road')
 	INSERT INTO dba.Orders (OrderId, OrderDate, CustomerId) VALUES (1, '20101010 00:00:00.000', 1)
@@ -171,6 +178,7 @@ BEGIN
 		SET @PagingId = @PagingId + 1
 	END
 	
+	INSERT INTO dba.DecimalTest (Value) VALUES (1.234567)	
 	COMMIT TRANSACTION
 
 	ALTER TABLE dba.Orders
