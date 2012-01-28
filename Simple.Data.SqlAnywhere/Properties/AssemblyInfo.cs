@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("SQL Anywhere add-in for ADO adapter.")]
 [assembly: AssemblyCompany("Simple.Data.SqlAnywhere")]
 [assembly: AssemblyProduct("Simple.Data.SqlAnywhere")]
-[assembly: AssemblyCopyright("Copyright © Richard Hopton 2011")]
+[assembly: AssemblyCopyright("Copyright © Richard Hopton 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -24,6 +24,6 @@ using System.Runtime.InteropServices;
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
 
-[assembly: AssemblyVersion("0.12.2.1")]
-[assembly: AssemblyFileVersion("0.12.2.1")]
+[assembly: AssemblyVersion("0.14.0.1")]
+[assembly: AssemblyFileVersion("0.14.0.1")]
 
