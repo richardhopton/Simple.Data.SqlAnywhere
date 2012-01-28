@@ -201,6 +201,8 @@ GRANT CONNECT TO test
 ;
 CREATE TABLE test.SchemaTable (Id int not null, Description varchar(100) not null)
 ;
+INSERT INTO test.SchemaTable VALUES (2, 'Pass')
+;
 CREATE PROCEDURE dba.GetCustomers
 AS
 BEGIN

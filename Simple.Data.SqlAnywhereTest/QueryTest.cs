@@ -6,6 +6,8 @@ using NUnit.Framework;
 
 namespace Simple.Data.SqlAnywhereTest
 {
+    using System.Collections;
+
     [TestFixture]
     public class QueryTest
     {
@@ -19,14 +21,16 @@ namespace Simple.Data.SqlAnywhereTest
         public void CountWithNoCriteriaShouldSelectThree()
         {
             var db = DatabaseHelper.Open();
-            Assert.AreEqual(3, db.Users.GetCount());
+            var count = db.Users.GetCount();
+            Assert.AreEqual(3, count);
         }
 
         [Test]
         public void CountWithCriteriaShouldSelectTwo()
         {
             var db = DatabaseHelper.Open();
-            Assert.AreEqual(2, db.Users.GetCount(db.Users.Age > 30));
+            int count = db.Users.GetCount(db.Users.Age > 30);
+            Assert.AreEqual(2, count);
         }
 
         [Test]
@@ -289,6 +293,74 @@ namespace Simple.Data.SqlAnywhereTest
             var db = DatabaseHelper.Open();
             int max = db.Users.FindAllByName("ZXCVBNM").Select(db.Users.Age.Max()).ToScalarOrDefault<int>();
             Assert.AreEqual(0, max);
+        }
+
+        [Test]
+        public void QueryWithSchemaQualifiedTableName()
+        {
+            var db = DatabaseHelper.Open();
+            var result = db.test.SchemaTable.QueryById(2)
+                           .Select(db.test.SchemaTable.Id,
+                                   db.test.SchemaTable.Description)
+                           .Single();
+            Assert.AreEqual(2, result.Id);
+            Assert.AreEqual("Pass", result.Description);
+        }
+
+        [Test]
+        public void QueryWithSchemaQualifiedTableNameAndAliases()
+        {
+            var db = DatabaseHelper.Open();
+            var result = db.test.SchemaTable.QueryById(2)
+                           .Select(db.test.SchemaTable.Id.As("This"),
+                                   db.test.SchemaTable.Description.As("That"))
+                           .Single();
+            Assert.AreEqual(2, result.This);
+            Assert.AreEqual("Pass", result.That);
+        }
+
+        [Test]
+        public void WithClauseShouldPreselectDetailTableAsCollection()
+        {
+            var db = DatabaseHelper.Open();
+            var result = db.Customers.FindAllByCustomerId(1).WithOrders().FirstOrDefault() as IDictionary<string, object>;
+            Assert.IsNotNull(result);
+            Assert.Contains("Orders", (ICollection)result.Keys);
+            var orders = result["Orders"] as IList<IDictionary<string, object>>;
+            Assert.IsNotNull(orders);
+            Assert.AreEqual(1, orders.Count);
+        }
+
+        [Test]
+        public void WithClauseShouldPreselectMasterTableAsDictionary()
+        {
+            var db = DatabaseHelper.Open();
+            var result = db.Orders.FindAllByOrderId(1).WithCustomer().FirstOrDefault() as IDictionary<string, object>;
+            Assert.IsNotNull(result);
+            Assert.Contains("Customer", (ICollection)result.Keys);
+            var customer = result["Customer"] as IDictionary<string, object>;
+            Assert.IsNotNull(customer);
+        }
+
+        [Test]
+        public void WithClauseShouldCastToStaticTypeWithComplexProperty()
+        {
+            var db = DatabaseHelper.Open();
+            Order actual = db.Orders.FindAllByOrderId(1).WithCustomer().FirstOrDefault();
+            Assert.IsNotNull(actual);
+            Assert.IsNotNull(actual.Customer);
+            Assert.AreEqual("Test", actual.Customer.Name);
+            Assert.AreEqual("100 Road", actual.Customer.Address);
+        }
+
+        [Test]
+        public void WithClauseShouldCastToStaticTypeWithCollection()
+        {
+            var db = DatabaseHelper.Open();
+            Customer actual = db.Customers.FindAllByCustomerId(1).WithOrders().FirstOrDefault();
+            Assert.IsNotNull(actual);
+            Assert.AreEqual(1, actual.Orders.Single().OrderId);
+            Assert.AreEqual(new DateTime(2010, 10, 10), actual.Orders.Single().OrderDate);
         }
     }
 }
