@@ -45,6 +45,8 @@ END IF
 CREATE PROCEDURE dba.TestReset
 AS
 BEGIN
+	IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id=OBJECT_ID('dba.Employee') AND type='U')
+		DROP TABLE dba.Employee
 	IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id=OBJECT_ID('dba.VwCustomers') AND type='V')
 		DROP VIEW dba.VwCustomers
 	IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id=OBJECT_ID('dba.Users') AND type='U')
@@ -79,6 +81,15 @@ BEGIN
 
 	ALTER TABLE dba.Users
 		ADD CONSTRAINT PK_Users PRIMARY KEY CLUSTERED (Id)
+
+	CREATE TABLE dba.Employee (
+		Id    INT      NOT NULL DEFAULT AUTOINCREMENT,
+		Name   VARCHAR (50) NOT NULL,
+		ManagerId INT      NULL
+    )
+	
+	ALTER TABLE dba.Employee
+		ADD CONSTRAINT PK_Employee PRIMARY KEY CLUSTERED (Id)
 
 	CREATE TABLE dba.Orders (
 		OrderId    INT      NOT NULL DEFAULT AUTOINCREMENT,
@@ -169,7 +180,10 @@ BEGIN
 	INSERT INTO dba.Users (Id, Name, Password, Age) VALUES (1,'Bob','Bob',32)
 	INSERT INTO dba.Users (Id, Name, Password, Age) VALUES (2,'Charlie','Charlie',49)
 	INSERT INTO dba.Users (Id, Name, Password, Age) VALUES (3,'Dave','Dave',12)
-	
+	INSERT INTO dba.Employee (Id, Name, ManagerId) VALUES (1, 'Alice', NULL)
+	INSERT INTO dba.Employee (Id, Name, ManagerId) VALUES (2, 'Bob', 1)
+	INSERT INTO dba.Employee (Id, Name, ManagerId) VALUES (3, 'Charlie', 2)
+
 	DECLARE @PagingId INT
 	SET @PagingId = 1
 	WHILE @PagingId <= 100
