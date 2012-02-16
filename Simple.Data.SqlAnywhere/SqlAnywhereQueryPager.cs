@@ -11,6 +11,13 @@ namespace Simple.Data.SqlAnywhere
     public class SqlAnywhereQueryPager : IQueryPager
     {
         private static readonly Regex ColumnExtract = new Regex(@"SELECT\s*(.*)\s*(FROM.*)", RegexOptions.Multiline | RegexOptions.IgnoreCase);
+        private static readonly Regex SelectMatch = new Regex(@"^SELECT\s*", RegexOptions.IgnoreCase);
+
+        public IEnumerable<string> ApplyLimit(string sql, int take)
+        {
+            yield return SelectMatch.Replace(sql, match => match.Value + " TOP " + take + " ");
+        }
+
         private readonly bool supportsCommonTableExpressions;
 
         public SqlAnywhereQueryPager(Boolean supportsCommonTableExpressions)

@@ -14,13 +14,29 @@ namespace Simple.Data.SqlAnywhereTest
         public void TestOrderDetail()
         {
             var db = DatabaseHelper.Open();
-            var order = db.Orders.FindByOrderDate(new DateTime(2010,10,10));
+            var order = db.Orders.FindByOrderDate(new DateTime(2010, 10, 10));
             Assert.IsNotNull(order);
 
             var orderItem = order.OrderItems.FirstOrDefault();
             var item = orderItem.Item;
             Assert.IsNotNull(item);
             Assert.AreEqual("Widget", item.Name);
+        }
+
+        [Test]
+        public void TestOrderDetailFromList()
+        {
+            var db = DatabaseHelper.Open();
+            var orders = db.Orders.FindAllByOrderDate(new DateTime(2010, 10, 10));
+            Assert.IsNotNull(orders);
+
+            foreach (var order in orders)
+            {
+                var orderItem = order.OrderItems.FirstOrDefault();
+                var item = orderItem.Item;
+                Assert.IsNotNull(item);
+                Assert.AreEqual("Widget", item.Name);
+            }
         }
 
         [Test]

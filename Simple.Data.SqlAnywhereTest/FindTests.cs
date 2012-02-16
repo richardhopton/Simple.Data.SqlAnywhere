@@ -7,6 +7,7 @@ using System.IO;
 using Simple.Data.Ado;
 using Simple.Data.SqlAnywhere;
 using Simple.Data.TestHelper;
+using System;
 
 namespace Simple.Data.SqlAnywhereTest
 {
@@ -67,6 +68,14 @@ namespace Simple.Data.SqlAnywhereTest
         {
             var db = DatabaseHelper.Open();
             IEnumerable<User> users = db.Users.FindAll(db.Users.Name.Like("Bob")).ToList<User>();
+            Assert.AreEqual(1, users.Count());
+        }
+
+        [Test]
+        public void TestFindAllByPartialNameOnChar()
+        {
+            var db = DatabaseHelper.Open();
+            IEnumerable<User> users = db.UsersWithChar.FindAll(db.UsersWithChar.Name.Like("Bob%")).ToList<User>();
             Assert.AreEqual(1, users.Count());
         }
 
@@ -137,6 +146,16 @@ namespace Simple.Data.SqlAnywhereTest
         }
 
         [Test]
+        public void TestFindAllByIdWithSchemaQualification()
+        {
+            var db = DatabaseHelper.Open();
+            var dbaCount = db.dba.SchemaTable.FindAllById(1).ToList().Count;
+            var testCount = db.test.SchemaTable.FindAllById(1).ToList().Count;
+            Assert.AreEqual(1, dbaCount);
+            Assert.AreEqual(0, testCount);
+        }
+    
+        [Test]
         public void TestFindOnAView()
         {
             var db = DatabaseHelper.Open();
@@ -161,6 +180,36 @@ namespace Simple.Data.SqlAnywhereTest
             var user = db.Users.FindBy(Name: "Bob");
             Assert.IsNotNull(user);
 
+        }
+
+        [Test]
+        public void WithClauseShouldCastToStaticTypeWithCollection()
+        {
+            var db = DatabaseHelper.Open();
+            Customer actual = db.Customers.WithOrders().FindByCustomerId(1);
+            Assert.IsNotNull(actual);
+            Assert.AreEqual(1, actual.Orders.Single().OrderId);
+            Assert.AreEqual(new DateTime(2010, 10, 10), actual.Orders.Single().OrderDate);
+        }
+
+        [Test]
+        public void NamedParameterAndWithClauseShouldCastToStaticTypeWithCollection()
+        {
+            var db = DatabaseHelper.Open();
+            Customer actual = db.Customers.WithOrders().FindBy(CustomerId: 1);
+            Assert.IsNotNull(actual);
+            Assert.AreEqual(1, actual.Orders.Single().OrderId);
+            Assert.AreEqual(new DateTime(2010, 10, 10), actual.Orders.Single().OrderDate);
+        }
+
+        [Test]
+        public void ExpressionAndWithClauseShouldCastToStaticTypeWithCollection()
+        {
+            var db = DatabaseHelper.Open();
+            Customer actual = db.Customers.WithOrders().Find(db.Customers.CustomerId == 1);
+            Assert.IsNotNull(actual);
+            Assert.AreEqual(1, actual.Orders.Single().OrderId);
+            Assert.AreEqual(new DateTime(2010, 10, 10), actual.Orders.Single().OrderDate);
         }
     }
 }

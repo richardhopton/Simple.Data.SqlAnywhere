@@ -35,13 +35,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\iAnywhere.Data.SQLAnywhere.v4.0.dll</HintPath>
     </Reference>
-    <Reference Include="Simple.Data, Version=0.14.0.2, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Simple.Data, Version=1.0.0.1, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Simple.Data.Core.0.14.0.2\lib\net40\Simple.Data.dll</HintPath>
+      <HintPath>..\packages\Simple.Data.Core.1.0.0-beta1\lib\net40\Simple.Data.dll</HintPath>
     </Reference>
-    <Reference Include="Simple.Data.Ado, Version=0.14.0.2, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Simple.Data.Ado, Version=1.0.0.1, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Simple.Data.Ado.0.14.0.2\lib\net40\Simple.Data.Ado.dll</HintPath>
+      <HintPath>..\packages\Simple.Data.Ado.1.0.0-beta1\lib\net40\Simple.Data.Ado.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />

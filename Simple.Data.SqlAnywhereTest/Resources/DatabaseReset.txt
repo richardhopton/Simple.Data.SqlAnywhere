@@ -51,6 +51,8 @@ BEGIN
 		DROP VIEW dba.VwCustomers
 	IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id=OBJECT_ID('dba.Users') AND type='U')
 		DROP TABLE dba.Users
+	IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id=OBJECT_ID('dba.UsersWithChar') AND type='U')
+		DROP TABLE dba.UsersWithChar
 	IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id=OBJECT_ID('dba.OrderItems') AND type='U')
 		DROP TABLE dba.OrderItems
 	IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id=OBJECT_ID('dba.Orders') AND type='U')
@@ -81,6 +83,16 @@ BEGIN
 
 	ALTER TABLE dba.Users
 		ADD CONSTRAINT PK_Users PRIMARY KEY CLUSTERED (Id)
+
+	CREATE TABLE dba.UsersWithChar (
+		Id       INT            NOT NULL DEFAULT AUTOINCREMENT,
+		Name     CHAR (100) NOT NULL,
+		Password CHAR (100) NOT NULL,
+		Age      INT            NOT NULL
+	)
+
+	ALTER TABLE dba.UsersWithChar
+		ADD CONSTRAINT PK_UsersWithChar PRIMARY KEY CLUSTERED (Id)
 
 	CREATE TABLE dba.Employee (
 		Id    INT      NOT NULL DEFAULT AUTOINCREMENT,
@@ -180,6 +192,9 @@ BEGIN
 	INSERT INTO dba.Users (Id, Name, Password, Age) VALUES (1,'Bob','Bob',32)
 	INSERT INTO dba.Users (Id, Name, Password, Age) VALUES (2,'Charlie','Charlie',49)
 	INSERT INTO dba.Users (Id, Name, Password, Age) VALUES (3,'Dave','Dave',12)
+	INSERT INTO dba.UsersWithChar (Id, Name, Password, Age) VALUES (1,'Bob','Bob',32)
+	INSERT INTO dba.UsersWithChar (Id, Name, Password, Age) VALUES (2,'Charlie','Charlie',49)
+	INSERT INTO dba.UsersWithChar (Id, Name, Password, Age) VALUES (3,'Dave','Dave',12)
 	INSERT INTO dba.Employee (Id, Name, ManagerId) VALUES (1, 'Alice', NULL)
 	INSERT INTO dba.Employee (Id, Name, ManagerId) VALUES (2, 'Bob', 1)
 	INSERT INTO dba.Employee (Id, Name, ManagerId) VALUES (3, 'Charlie', 2)

@@ -14,6 +14,18 @@ namespace Simple.Data.SqlAnywhereTest
         static readonly Regex Normalize = new Regex(@"\s+", RegexOptions.Multiline);
 
         [Test]
+        public void ShouldApplyLimitUsingTop_CTE()
+        {
+            var sql = "select a,b,c from d where a = 1 order by c";
+            var expected = new[] { "select top 5 a,b,c from d where a = 1 order by c" };
+
+            var pagedSql = new SqlAnywhereQueryPager(true).ApplyLimit(sql, 5);
+            var modified = pagedSql.Select(x => Normalize.Replace(x, " ").ToLowerInvariant());
+
+            Assert.IsTrue(expected.SequenceEqual(modified));
+        }
+
+        [Test]
         public void ShouldApplyPagingUsingOrderBy_CTE()
         {
             var sql = "select a,b,c from d where a = 1 order by c";
@@ -96,6 +108,18 @@ namespace Simple.Data.SqlAnywhereTest
             var modified = pagedSql.Select(x => Normalize.Replace(x, " ").ToLowerInvariant());
 
             Assert.AreEqual(String.Join("\n", expected), String.Join("\n", modified));
+        }
+
+        [Test]
+        public void ShouldApplyLimitUsingTop_NoCTE()
+        {
+            var sql = "select a,b,c from d where a = 1 order by c";
+            var expected = new[] { "select top 5 a,b,c from d where a = 1 order by c" };
+
+            var pagedSql = new SqlAnywhereQueryPager(false).ApplyLimit(sql, 5);
+            var modified = pagedSql.Select(x => Normalize.Replace(x, " ").ToLowerInvariant());
+
+            Assert.IsTrue(expected.SequenceEqual(modified));
         }
 
         [Test]
